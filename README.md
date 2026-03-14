@@ -1,7 +1,7 @@
 ```
 Is this an AI generated project ?
 
-AI was used to facilitate the collection of informations as well as to debug certain syntax errors.
+AI was used to facilitate the collection of informations as well as to fix syntax errors.
 But all of the code was written by a human.
 ```
 
