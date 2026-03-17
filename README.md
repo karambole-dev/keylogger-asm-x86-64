@@ -44,7 +44,7 @@ sudo ./keylogger </dev/null &
 nasm -f elf64 keylogger.asm ; ld keylogger.o -o keylogger ; sudo ./keylogger </dev/null &
 ```
 
-### Malware autopsy
+### Notes on the project
 #### First analysis without obfuscation method (14/03/2026)
 
 By running the program, you can see the DNS queries it performs.
@@ -57,6 +57,17 @@ Things to add before the next analysis :
 - syscall obfuscation
 - dynamic signature generation allowing its fingerprint to be modified at each execution
 - persistence mechanism
+
+#### First attempt of syscall obfuscation
+This first attempt consists of retrieving the syscall into a "num" file. 
+
+cf : experimentation/syscall_obfuscation_first_attempt.asm
+
+![](img/syscall_obfuscation_first_attempt.png)
+
+The syscall is obfuscated ; sys_write is not recover by the decompiler, it's the buffer return by sys_read.
+
+But it is still easy to retrieve the file and deduce the syscalls from it.
 
 ### Warning
 Only use this program on a machine you own. This code was written for educational purposes.
