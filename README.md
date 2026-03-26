@@ -62,6 +62,38 @@ The syscall is obfuscated ; sys_write is not recover by the decompiler, it's the
 
 But it is still easy to retrieve the file and deduce the syscalls from it.
 
+#### Obfuscation trought syscall hashing (26/03/2026)
+
+I initially implemented a non-cryptographic pseudo-hashing method of the djb2 type (cf : https://github.com/karambole-dev/learn-assembly-x86/blob/main/hashing/pseudo_djb2.asm)
+
+We will hash all the numbers from 100 to 0 until one of them has the same hash as the desired one (here 60), and if it is the case we can exit the programm correctly by using it as a syscall (sys_exit = 60).
+
+cf : experimentation/syscall_obfuscation_hashing.asm
+
+I then placed all this logic in a function that the keylogger calls before a syscall: 
+```assembly
+    mov rdi, 177575 ; hash of number : 2
+    call find_value ; r10 = returned value
+
+    mov rax, r10 ; open event0 file
+    mov rdi, event0_file_path
+    mov rsi, 0
+    mov rdx, 0
+    syscall
+```
+
+I only obfuscated the first syscall in the "keylogger_with_dns_exfiltration_and_syscall_obfuscation.asm" version ; the code is already quite complex and I would like to be able to continue rereading it.
+
+On the reverse side, we see that the decompiler can no longer automatically retrieve the syscall. This is already enough to slow down the analysis.
+
+![](img/reverse_syscall_hashing.png)
+
+Obviously, the fact that the file name is visible makes obfuscation less effective.
+
+Things to add before the next analysis :
+- fingerprint generation
+- obfuscate files name and domain to bypass basic yara rules
+
 ### Warning
 Only use this program on a machine you own. This code was written for educational purposes.
 
