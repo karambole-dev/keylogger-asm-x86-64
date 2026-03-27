@@ -1,3 +1,23 @@
+## Keylogger-asm-x86-64
+**With syscalls obfuscation , DNS exfiltration and dynamic generation of fingerprint.** 
+
+For analytical and educational purposes.
+
+|  |  |
+|------|-------------|
+| keylogger_with_dns_exfiltration.asm | listen keys and sends keycodes through a dns request |
+| keylogger_with_dns_exfiltration_and_syscall_obfuscation.asm | demonstrates syscall obfuscation through dynamic resolution of a pseudo-djb2 hash |
+| keylogger_with_dns_exfiltration_and_syscall_obfuscation_and_dynamic_fingerprint.asm | add a mechanism to change the program hash at each execution |
+
+---
+```
+Is this an AI generated project ?
+
+AI was used to facilitate the collection of informations as well as to fix syntax errors.
+But all of the code and the content was written by a human.
+```
+---
+
 ### Pseudo code
 ```
 input_event = readOneInputEvent("/dev/input/event0")
@@ -113,12 +133,3 @@ So you have to retrieve it from memory (/proc/self/exe is the current bin in the
 
 ### Warning
 Only use this program on a machine you own. This code was written for educational purposes.
-
----
-
-```
-Is this an AI generated project ?
-
-AI was used to facilitate the collection of informations as well as to fix syntax errors.
-But all of the code and the content was written by a human.
-```
