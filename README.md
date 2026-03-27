@@ -37,8 +37,8 @@ sudo ./keylogger </dev/null &
 nasm -f elf64 keylogger.asm ; ld keylogger.o -o keylogger ; sudo ./keylogger </dev/null &
 ```
 
-### Notes on the project
-#### First analysis without obfuscation method (14/03/2026)
+## Notes on the project
+### First analysis without obfuscation method (14/03/2026)
 
 By running the program, you can see the DNS queries it performs.
 ![](img/wireshark.png)
@@ -51,7 +51,7 @@ Things to add before the next analysis :
 - dynamic signature generation allowing its fingerprint to be modified at each execution
 - persistence mechanism
 
-#### First attempt of syscall obfuscation
+### First attempt of syscall obfuscation
 This first attempt consists of retrieving the syscall into a "num" file. 
 
 cf : experimentation/syscall_obfuscation_first_attempt.asm
@@ -62,7 +62,7 @@ The syscall is obfuscated ; sys_write is not recover by the decompiler, it's the
 
 But it is still easy to retrieve the file and deduce the syscalls from it.
 
-#### Obfuscation trought syscall hashing (26/03/2026)
+### Obfuscation trought syscall hashing (26/03/2026)
 
 I initially implemented a non-cryptographic pseudo-hashing method of the djb2 type (cf : https://github.com/karambole-dev/learn-assembly-x86/blob/main/hashing/pseudo_djb2.asm)
 
@@ -93,6 +93,23 @@ Obviously, the fact that the file name is visible makes obfuscation less effecti
 Things to add before the next analysis :
 - fingerprint generation
 - obfuscate files name and domain to bypass basic yara rules
+
+### Dynamic fingerprint (27/03/2026)
+
+```
+$ md5sum keylogger_with_dns_exfiltration_and_syscall_obfuscation_and_dynamic_fingerprint
+a7974156c03fd4e83898b9fc5dd3061e
+
+$ sudo ./keylogger_with_dns_exfiltration_and_syscall_obfuscation_and_dynamic_fingerprint 
+^C
+
+$ md5sum keylogger_with_dns_exfiltration_and_syscall_obfuscation_and_dynamic_fingerprint
+3761e4aa2318f7ffd61725692d2dc315
+```
+
+Creating a self-modifying binary was much harder than i thought because the kernel blocks writing to running binaries (errors ETXTBSY).
+
+So you have to retrieve it from memory (/proc/self/exe is the current bin in the context so we can read it), copy it to a temporary file, unlink the file from its memory instance, delete the file, and rename the copy with the name of the original binary. (cf : experimentation/dynamic_fingerprint.asm)
 
 ### Warning
 Only use this program on a machine you own. This code was written for educational purposes.
